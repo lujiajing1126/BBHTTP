@@ -101,7 +101,6 @@ typedef NS_ENUM(NSUInteger, BBHTTPResponseState) {
 - (BOOL)addHeaderToCurrentResponse:(NSString*)headerLine;
 - (BOOL)appendDataToCurrentResponse:(uint8_t*)bytes withLength:(NSUInteger)length;
 
-- (BOOL)responseHeaderWithLocationInfo;
 
 #pragma mark Querying context information
 
@@ -117,5 +116,6 @@ typedef NS_ENUM(NSUInteger, BBHTTPResponseState) {
 @property(assign, nonatomic, readonly) BBHTTPResponseState state;
 
 - (BOOL)isCurrentResponse100Continue;
+- (BOOL)isCurrentResponse30XRedirect;
 
 @end

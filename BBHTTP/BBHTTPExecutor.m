@@ -70,16 +70,11 @@ static size_t BBHTTPExecutorReadHeader(uint8_t* buffer, size_t size, size_t leng
         return length;
     }
     
-    // check header location info
-    if ([context responseHeaderWithLocationInfo])
-    {
-        return length;
-    }
-    
     // End of headers reached, data will follow
     BBHTTPLogTrace(@"%@ | All headers received.", context);
     BOOL canProceed = YES;
-    if ([context isCurrentResponse100Continue]) {
+    if ([context isCurrentResponse100Continue] ||
+        [context isCurrentResponse30XRedirect]) {
         // Subsequent callbacks will hit BBHTTPExecutorReadStatusLine()
         [context finishCurrentResponse];
     } else {
@@ -133,24 +128,33 @@ static size_t BBHTTPExecutorSendCallback(uint8_t* buffer, size_t size, size_t le
     }
 }
 
+static size_t BBHTTPExecutorHeaderCallback(uint8_t* buffer, size_t size, size_t length, BBHTTPRequestContext* context)
+{
+    if ([context.request wasCancelled]) return 0;
+    
+    switch (context.state) {
+        case BBHTTPResponseStateReady:
+        case BBHTTPResponseStateReadingStatusLine:
+            return BBHTTPExecutorReadStatusLine(buffer, size, length, context);
+            
+        case BBHTTPResponseStateReadingHeaders:
+            return BBHTTPExecutorReadHeader(buffer, size, length, context);
+        default:
+            return 0;
+    }
+}
+
 static size_t BBHTTPExecutorReceiveCallback(uint8_t* buffer, size_t size, size_t length, BBHTTPRequestContext* context)
 {
     if ([context.request wasCancelled]) return 0;
 
     switch (context.state) {
-        case BBHTTPResponseStateReady:
-        case BBHTTPResponseStateReadingStatusLine:
-            return BBHTTPExecutorReadStatusLine(buffer, size, length, context);
-
-        case BBHTTPResponseStateReadingHeaders:
-            return BBHTTPExecutorReadHeader(buffer, size, length, context);
-
         case BBHTTPResponseStateReadingData:
             return BBHTTPExecutorAppendData(buffer, size, length, context);
 
         default:
-            // never happens...
-            return 0;
+            // continue
+            return length;
     }
 }
 
@@ -505,6 +509,10 @@ static BOOL BBHTTPExecutorInitialized = NO;
         curl_easy_setopt(handle, CURLOPT_READDATA, NULL);
     }
 
+    // Setup - header handling callback
+    curl_easy_setopt(handle, CURLOPT_HEADERFUNCTION, BBHTTPExecutorHeaderCallback);
+    curl_easy_setopt(handle, CURLOPT_HEADERDATA, context);
+    
     // Setup - response handling callback
     curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, BBHTTPExecutorReceiveCallback);
     curl_easy_setopt(handle, CURLOPT_WRITEDATA, context);
@@ -529,6 +537,7 @@ static BOOL BBHTTPExecutorInitialized = NO;
     } else {
         curl_easy_setopt(handle, CURLOPT_FOLLOWLOCATION, 1L);
         curl_easy_setopt(handle, CURLOPT_MAXREDIRS, request.maxRedirects);
+        curl_easy_setopt(handle, CURLOPT_AUTOREFERER, 1L);
     }
 
     // Setup - misc configuration
