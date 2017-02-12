@@ -128,33 +128,22 @@ static size_t BBHTTPExecutorSendCallback(uint8_t* buffer, size_t size, size_t le
     }
 }
 
-static size_t BBHTTPExecutorHeaderCallback(uint8_t* buffer, size_t size, size_t length, BBHTTPRequestContext* context)
-{
-    if ([context.request wasCancelled]) return 0;
-    
-    switch (context.state) {
-        case BBHTTPResponseStateReady:
-        case BBHTTPResponseStateReadingStatusLine:
-            return BBHTTPExecutorReadStatusLine(buffer, size, length, context);
-            
-        case BBHTTPResponseStateReadingHeaders:
-            return BBHTTPExecutorReadHeader(buffer, size, length, context);
-        default:
-            return 0;
-    }
-}
-
 static size_t BBHTTPExecutorReceiveCallback(uint8_t* buffer, size_t size, size_t length, BBHTTPRequestContext* context)
 {
     if ([context.request wasCancelled]) return 0;
 
     switch (context.state) {
+        case BBHTTPResponseStateReady:
+        case BBHTTPResponseStateReadingStatusLine:
+            return BBHTTPExecutorReadStatusLine(buffer, size, length, context);
+        case BBHTTPResponseStateReadingHeaders:
+            return BBHTTPExecutorReadHeader(buffer, size, length, context);
         case BBHTTPResponseStateReadingData:
             return BBHTTPExecutorAppendData(buffer, size, length, context);
-
+            
         default:
-            // continue
-            return length;
+            // never happen
+            return 0;
     }
 }
 
@@ -508,10 +497,6 @@ static BOOL BBHTTPExecutorInitialized = NO;
         curl_easy_setopt(handle, CURLOPT_READFUNCTION, NULL);
         curl_easy_setopt(handle, CURLOPT_READDATA, NULL);
     }
-
-    // Setup - header handling callback
-    curl_easy_setopt(handle, CURLOPT_HEADERFUNCTION, BBHTTPExecutorHeaderCallback);
-    curl_easy_setopt(handle, CURLOPT_HEADERDATA, context);
     
     // Setup - response handling callback
     curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, BBHTTPExecutorReceiveCallback);
