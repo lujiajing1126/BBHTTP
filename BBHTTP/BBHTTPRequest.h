@@ -374,7 +374,7 @@ extern NSString* NSStringFromBBTransferSpeed(BBTransferSpeed transferSpeed);
 /// @name Configuring other request properties
 /// ------------------------------------------
 
-/* TODO: Not yet properly supported. */
+/* Maximum number of redirects allowed. */
 @property(assign, nonatomic) NSUInteger maxRedirects;
 
 /**
@@ -482,5 +482,10 @@ extern NSString* NSStringFromBBTransferSpeed(BBTransferSpeed transferSpeed);
 
 /** Flag that indicates whether this request was cancelled. */
 @property(assign, nonatomic, readonly, getter = wasCancelled) BOOL cancelled;
+
+/** Specify data to POST to server. */
+@property (nonatomic, strong) NSString* postField;
+/** Do not get the body contents. */
+@property (nonatomic, assign) BOOL noBody;
 
 @end

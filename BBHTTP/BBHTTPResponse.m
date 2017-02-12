@@ -128,6 +128,10 @@ BBHTTPProtocolVersion BBHTTPProtocolVersionFromNSString(NSString* string)
     return _successful;
 }
 
+- (void)resetHeader
+{
+    [_headers removeAllObjects];
+}
 
 #pragma mark Debug
 

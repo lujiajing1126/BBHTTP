@@ -71,4 +71,6 @@ BBHTTPProtocolVersion BBHTTPProtocolVersionFromNSString(NSString* string);
 - (NSString*)objectForKeyedSubscript:(NSString*)header;
 - (void)setObject:(NSString*)value forKeyedSubscript:(NSString*)header;
 
+- (void)resetHeader;
+
 @end

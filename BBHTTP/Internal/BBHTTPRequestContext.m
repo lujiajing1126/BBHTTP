@@ -295,6 +295,26 @@
     return NO;
 }
 
+- (BOOL)responseHeaderWithLocationInfo
+{
+    if (_currentResponse == nil) return NO;
+    
+    if (_request.maxRedirects == 0) return NO;
+    
+    NSString* location = [_currentResponse headerWithName:@"Location"];
+    if (location.length == 0)
+    {
+        return NO;
+    }
+    
+    [_currentResponse resetHeader];
+    _request.maxRedirects--;
+    
+    [self switchToState:BBHTTPResponseStateReadingStatusLine];
+    
+    return YES;
+}
+
 
 #pragma mark Querying context information
 

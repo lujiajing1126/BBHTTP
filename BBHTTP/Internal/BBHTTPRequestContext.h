@@ -101,6 +101,7 @@ typedef NS_ENUM(NSUInteger, BBHTTPResponseState) {
 - (BOOL)addHeaderToCurrentResponse:(NSString*)headerLine;
 - (BOOL)appendDataToCurrentResponse:(uint8_t*)bytes withLength:(NSUInteger)length;
 
+- (BOOL)responseHeaderWithLocationInfo;
 
 #pragma mark Querying context information
 
