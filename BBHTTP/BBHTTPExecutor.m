@@ -504,8 +504,8 @@ static BOOL BBHTTPExecutorInitialized = NO;
 
     // Setup - configure timeouts
     curl_easy_setopt(handle, CURLOPT_CONNECTTIMEOUT, request.connectionTimeout);
-    //curl_easy_setopt(handle, CURLOPT_LOW_SPEED_LIMIT, request.downloadTimeout.bytesPerSecond);
-    //curl_easy_setopt(handle, CURLOPT_LOW_SPEED_TIME, request.downloadTimeout.duration);
+    curl_easy_setopt(handle, CURLOPT_LOW_SPEED_LIMIT, request.downloadTimeout.bytesPerSecond);
+    curl_easy_setopt(handle, CURLOPT_LOW_SPEED_TIME, request.downloadTimeout.duration);
 
     // Setup - speed limits
     if ([request isUpload] && (request.uploadSpeedLimit > 0)) {

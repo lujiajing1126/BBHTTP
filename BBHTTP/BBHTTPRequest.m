@@ -88,7 +88,7 @@ NSString* NSStringFromBBTransferSpeed(BBTransferSpeed transferSpeed)
         _startTimestamp = -1;
         _endTimestamp = -1;
         _version = version;
-        _maxRedirects = 1;
+        _maxRedirects = 3;
         _allowInvalidSSLCertificates = YES;
         _connectionTimeout = 10;
         _downloadTimeout = BBTransferSpeedMake(1, 20);

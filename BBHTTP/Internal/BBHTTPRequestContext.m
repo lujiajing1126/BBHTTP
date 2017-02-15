@@ -78,11 +78,9 @@
         nextState = BBHTTPResponseStateReadingStatusLine; // ... unless it's a 100-Continue; if so, go back to the start
         // TODO I'm assuming 100-Continue's never have data...
         _uploadAccepted = YES;
-    } else if ([self isCurrentResponse30XRedirect] && _request.maxRedirects > 0) {
+    } else if ([self isCurrentResponse30XRedirect]) {
         // reset header and decrease redirect count
-        _request.maxRedirects--;
-        [_currentResponse resetHeader];
-        
+        //_request.maxRedirects--;
         // 301, 302 continue readStatusline
         nextState = BBHTTPResponseStateReadingStatusLine;
         _uploadAccepted = YES;
