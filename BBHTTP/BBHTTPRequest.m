@@ -27,7 +27,7 @@
 
 #pragma mark - Utility Functions
 
-BBTransferSpeed BBTransferSpeedMake(NSUInteger bytesPerSecond, NSTimeInterval duration)
+BBTransferSpeed BBTransferSpeedMake(NSUInteger bytesPerSecond, NSUInteger duration)
 {
     BBTransferSpeed transferSpeed;
     transferSpeed.bytesPerSecond = bytesPerSecond;
@@ -38,7 +38,7 @@ BBTransferSpeed BBTransferSpeedMake(NSUInteger bytesPerSecond, NSTimeInterval du
 
 NSString* NSStringFromBBTransferSpeed(BBTransferSpeed transferSpeed)
 {
-    return [NSString stringWithFormat:@"%lu/s for %.0f seconds",
+    return [NSString stringWithFormat:@"%lu/s for %lu seconds",
             (unsigned long)transferSpeed.bytesPerSecond, transferSpeed.duration];
 }
 

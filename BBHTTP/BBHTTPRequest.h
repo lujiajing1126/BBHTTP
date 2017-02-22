@@ -28,7 +28,7 @@
 
 struct BBTransferSpeed {
     NSUInteger bytesPerSecond;
-    NSTimeInterval duration;
+    NSUInteger duration;
 };
 typedef struct BBTransferSpeed BBTransferSpeed;
 
@@ -36,7 +36,7 @@ typedef struct BBTransferSpeed BBTransferSpeed;
 
 #pragma mark - Utility Functions
 
-extern BBTransferSpeed BBTransferSpeedMake(NSUInteger bytesPerSecond, NSTimeInterval duration);
+extern BBTransferSpeed BBTransferSpeedMake(NSUInteger bytesPerSecond, NSUInteger duration);
 extern NSString* NSStringFromBBTransferSpeed(BBTransferSpeed transferSpeed);
 
 
