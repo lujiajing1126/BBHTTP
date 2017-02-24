@@ -484,7 +484,7 @@ extern NSString* NSStringFromBBTransferSpeed(BBTransferSpeed transferSpeed);
 @property(assign, nonatomic, readonly, getter = wasCancelled) BOOL cancelled;
 
 /** Specify data to POST to server. */
-@property (nonatomic, strong) NSString* postField;
+@property (nonatomic, strong) NSData* postField;
 /** Do not get the body contents. */
 @property (nonatomic, assign) BOOL noBody;
 

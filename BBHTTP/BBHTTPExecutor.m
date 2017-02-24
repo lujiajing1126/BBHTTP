@@ -532,9 +532,8 @@ static BOOL BBHTTPExecutorInitialized = NO;
     
     if (request.postField.length > 0)
     {
-        const char* postField = [request.postField UTF8String];
-        curl_easy_setopt(handle, CURLOPT_POSTFIELDSIZE, strlen(postField));
-        curl_easy_setopt(handle, CURLOPT_POSTFIELDS, postField);
+        curl_easy_setopt(handle, CURLOPT_POSTFIELDSIZE, request.postField.length);
+        curl_easy_setopt(handle, CURLOPT_POSTFIELDS, request.postField.bytes);
     }
     
     if (request.noBody)
