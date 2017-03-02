@@ -117,6 +117,8 @@
 @property(assign, nonatomic) BOOL verbose;
 /** Opens and closes a connection for each request. */
 @property(assign, nonatomic) BOOL dontReuseConnections;
+/** predefined resolve host set. */
+@property(assign, nonatomic, readwrite) NSDictionary<NSString*,NSString*> *resolveSet;
 
 
 #pragma mark Executing requests
@@ -138,6 +140,7 @@
  */
 - (BOOL)executeRequest:(BBHTTPRequest*)request;
 
++ (void)setResolvePolicy:(NSString*)host withIP: (NSString*)ip;
 
 #pragma mark Cleanup
 

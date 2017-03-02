@@ -482,6 +482,15 @@ static BOOL BBHTTPExecutorInitialized = NO;
         // if Expect header wasn't set until now, make sure libcurl doesn't add it
         curl_slist_append(headers, "Expect: ");
     }
+    
+    // Setup - Resolve
+    NSString *hostWithPort = [NSString stringWithFormat:@"%@:%@", request.url.host, request.url.port];
+    struct curl_slist *host = NULL;
+    NSString *ip = [self.resolveSet objectForKey:hostWithPort];
+    if (ip != nil) {
+        host = curl_slist_append(NULL, [[NSString stringWithFormat:@"%@:%@",hostWithPort,host] UTF8String]);
+        curl_easy_setopt(handle, CURLOPT_RESOLVE, host);
+    }
 
     curl_easy_setopt(handle, CURLOPT_HEADER, 1L);
     curl_easy_setopt(handle, CURLOPT_HTTPHEADER, headers);
@@ -540,6 +549,7 @@ static BOOL BBHTTPExecutorInitialized = NO;
 
     // Cleanup the headers & reset handle to a pristine state
     curl_slist_free_all(headers);
+    curl_slist_free_all(host);
     curl_easy_reset(handle);
 
     if ([request wasCancelled]) {
@@ -760,6 +770,10 @@ static BOOL BBHTTPExecutorInitialized = NO;
 
     if (reason == nil) return BBHTTPError(code, description);
     else return BBHTTPErrorWithReason(code, description, reason);
+}
+
++ (void)setResolvePolicy:(NSString *)host withIP:(NSString *)ip {
+    [[BBHTTPExecutor sharedExecutor].resolveSet setValue:ip forKey:host];
 }
 
 @end
