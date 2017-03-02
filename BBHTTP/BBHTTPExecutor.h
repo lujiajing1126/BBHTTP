@@ -18,6 +18,8 @@
 //  Created by Bruno de Carvalho - @biasedbit / http://biasedbit.com
 //  Copyright (c) 2013 BiasedBit. All rights reserved.
 //
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 @class BBHTTPRequest;
 @class BBHTTPResponse;

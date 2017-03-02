@@ -20,8 +20,7 @@
 //
 
 #import "BBHTTPAccumulator.h"
-
-
+#import <Foundation/Foundation.h>
 
 #pragma mark -
 

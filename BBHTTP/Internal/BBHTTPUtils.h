@@ -18,7 +18,7 @@
 //  Created by Bruno de Carvalho - @biasedbit / http://biasedbit.com
 //  Copyright (c) 2013 BiasedBit. All rights reserved.
 //
-
+#import <Foundation/Foundation.h>
 #pragma mark - Constants
 
 #define BBHTTPVersion @"0.9.9"
