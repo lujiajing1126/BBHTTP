@@ -204,3 +204,4 @@ typedef CURL_TYPEOF_CURL_OFF_T curl_off_t;
 #define CURL_SUFFIX_CURL_OFF_TU ULL
 
 #endif /* __CURL_CURLBUILD_H */
+
