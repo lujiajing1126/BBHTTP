@@ -120,7 +120,8 @@
 /** Opens and closes a connection for each request. */
 @property(assign, nonatomic) BOOL dontReuseConnections;
 /** predefined resolve host set. */
-@property(assign, nonatomic, readwrite) NSDictionary<NSString*,NSString*> *resolveSet;
+@property(retain, atomic, readwrite) NSMutableDictionary<NSString*,NSString*> *resolveSet;
+@property(retain, atomic, readwrite) NSLock *lock;
 
 
 #pragma mark Executing requests

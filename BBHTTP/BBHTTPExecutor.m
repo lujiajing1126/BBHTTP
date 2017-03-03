@@ -197,7 +197,6 @@ static int BBHTTPExecutorDebugCallback(CURL* handle, curl_infotype type, char* t
 
 static BOOL BBHTTPExecutorInitialized = NO;
 
-
 #pragma mark Class creation
 
 + (void)initialize
@@ -241,6 +240,9 @@ static BOOL BBHTTPExecutorInitialized = NO;
 
         NSString* requestQueueId = [NSString stringWithFormat:@"BBHTTP.HTTPExecutorRequestQueue-%@", identifier];
         _requestExecutionQueue = dispatch_queue_create([requestQueueId UTF8String], DISPATCH_QUEUE_CONCURRENT);
+        
+        _resolveSet = [[NSMutableDictionary alloc] init];
+        _lock = [[NSLock alloc] init];
     }
 
     return self;
@@ -483,12 +485,17 @@ static BOOL BBHTTPExecutorInitialized = NO;
     }
     
     // Setup - Resolve
-    NSString *hostWithPort = [NSString stringWithFormat:@"%@:%@", request.url.host, request.url.port];
+    NSString *hostWithPort = [NSString stringWithFormat:@"%@:%@", request.url.host,[self getPort:request.url]];
     struct curl_slist *host = NULL;
+    [[self lock] lock];
     NSString *ip = [self.resolveSet objectForKey:hostWithPort];
+    [[self lock] unlock];
     if (ip != nil) {
-        host = curl_slist_append(NULL, [[NSString stringWithFormat:@"%@:%@",hostWithPort,host] UTF8String]);
+        host = curl_slist_append(NULL, [[NSString stringWithFormat:@"%@:%@",hostWithPort,ip] UTF8String]);
         curl_easy_setopt(handle, CURLOPT_RESOLVE, host);
+        NSLog(@"Set CURLOPT_RESOLVE: %@",[NSString stringWithFormat:@"%@:%@",hostWithPort,ip]);
+    } else {
+        NSLog(@"Cannot find anything about %@",hostWithPort);
     }
 
     curl_easy_setopt(handle, CURLOPT_HEADER, 1L);
@@ -784,7 +791,24 @@ static BOOL BBHTTPExecutorInitialized = NO;
 }
 
 + (void)setResolvePolicy:(NSString *)host withIP:(NSString *)ip {
-    [[BBHTTPExecutor sharedExecutor].resolveSet setValue:ip forKey:host];
+    NSLog(@"Set Resolve Set: %@ for host %@",ip,host);
+    [[BBHTTPExecutor sharedExecutor].lock lock];
+    [[[BBHTTPExecutor sharedExecutor] resolveSet] setValue:ip forKey:host];
+    [[BBHTTPExecutor sharedExecutor].lock unlock];
+}
+
+
+- (NSNumber*) getPort:(NSURL *)url {
+    if (url.port == nil) {
+        if([url.scheme isEqualToString:@"http"]) {
+            return [NSNumber numberWithInteger:80];
+        }
+        if ([url.scheme isEqualToString:@"https"]) {
+            return [NSNumber numberWithInteger:443];
+        }
+        return [NSNumber numberWithInteger:80];
+    }
+    return url.port;
 }
 
 @end

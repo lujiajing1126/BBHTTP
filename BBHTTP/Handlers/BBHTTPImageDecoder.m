@@ -18,7 +18,7 @@
 //  Created by Bruno de Carvalho - @biasedbit / http://biasedbit.com
 //  Copyright (c) 2013 BiasedBit. All rights reserved.
 //
-
+#import <Availability.h>
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
    #import <UIKit/UIKit.h>
 #elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
