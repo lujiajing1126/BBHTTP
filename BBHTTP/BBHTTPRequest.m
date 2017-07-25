@@ -87,6 +87,7 @@ NSString* NSStringFromBBTransferSpeed(BBTransferSpeed transferSpeed)
 
         _startTimestamp = -1;
         _endTimestamp = -1;
+        _delay_milliseconds = 0;
         _version = version;
         _maxRedirects = 3;
         _allowInvalidSSLCertificates = YES;
@@ -402,6 +403,13 @@ NSString* NSStringFromBBTransferSpeed(BBTransferSpeed transferSpeed)
     NSString* url = [_url absoluteString];
     NSString* trimmedUrl = [url length] > 40 ? [[url substringToIndex:37] stringByAppendingString:@"…"] : url;
     return [NSString stringWithFormat:@"%@ %@", _verb, trimmedUrl];
+}
+
+#pragma set request property
+
+- (instancetype) setDelayInMills: (long) delay {
+    _delay_milliseconds = delay;
+    return self;
 }
 
 @end

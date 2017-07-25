@@ -56,6 +56,7 @@ extern NSString* NSStringFromBBTransferSpeed(BBTransferSpeed transferSpeed);
 @private
     long long _startTimestamp;
     long long _endTimestamp;
+    long _delay_milliseconds;
     NSUInteger _sentBytes;
     NSUInteger _receivedBytes;
     NSError* _error;
@@ -414,6 +415,13 @@ extern NSString* NSStringFromBBTransferSpeed(BBTransferSpeed transferSpeed);
  When set to `NO` and the remote peer SSL/TLS verification fails, the request will fail.
  */
 @property(assign, nonatomic) BOOL allowInvalidSSLCertificates;
+
+/**
+ Delay Time in milliseconds to send the requst
+ */
+@property(assign, nonatomic, readonly) long delay_milliseconds;
+
+- (instancetype) setDelayInMills: (long) delay;
 
 
 #pragma mark Querying request properties

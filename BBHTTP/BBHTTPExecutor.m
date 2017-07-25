@@ -316,7 +316,6 @@ static BOOL BBHTTPExecutorInitialized = NO;
     return accepted;
 }
 
-
 #pragma mark Cleanup
 
 + (void)cleanup
@@ -382,17 +381,23 @@ static BOOL BBHTTPExecutorInitialized = NO;
     BBHTTPRequestContext* context = [[BBHTTPRequestContext alloc] initWithRequest:request andCurlHandle:handle];
     [self prepareContextForExecution:context];
     [self addToRunning:request];
-
-    dispatch_async(_requestExecutionQueue, ^{
+    
+    dispatch_block_t b = ^{
         [self executeContext:context withCurlHandle:handle];
-
+        
         dispatch_sync(_synchronizationQueue, ^{
             [self removeFromRunning:request];
             [self returnHandle:handle];
-
+            
             [self executeNextRequest];
         });
-    });
+    }
+    
+    if (request.delay_milliseconds > 0) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(request.delay_milliseconds * NSEC_PER_MSEC)), _requestExecutionQueue, b);
+    } else {
+        dispatch_async(_requestExecutionQueue, b);
+    }
 }
 
 - (void)executeNextRequest
