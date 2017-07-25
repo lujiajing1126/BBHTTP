@@ -391,7 +391,7 @@ static BOOL BBHTTPExecutorInitialized = NO;
             
             [self executeNextRequest];
         });
-    }
+    };
     
     if (request.delay_milliseconds > 0) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(request.delay_milliseconds * NSEC_PER_MSEC)), _requestExecutionQueue, b);
