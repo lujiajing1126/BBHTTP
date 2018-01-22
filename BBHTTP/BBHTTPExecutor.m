@@ -304,8 +304,12 @@ static BOOL BBHTTPExecutorInitialized = NO;
             [self enqueueRequest:request];
         } else {
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
-            if (([_running count] == 0) && _manageNetworkActivityIndicator)
-                [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+            // setNetworkActivityIndicatorVisible on main thread
+            if (([_running count] == 0) && _manageNetworkActivityIndicator) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+                });
+            }
 #endif
             [self createContextAndExecuteRequest:request];
         }
@@ -408,8 +412,11 @@ static BOOL BBHTTPExecutorInitialized = NO;
         if (nextRequest == nil) { // No more requests queued, bail out
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
             // Last request to finish stops the activity indicator
-            if (([_running count] == 0) && _manageNetworkActivityIndicator)
-                [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+            if (([_running count] == 0) && _manageNetworkActivityIndicator) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+                });
+            }
 #endif
             return;
         }
